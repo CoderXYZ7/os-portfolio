@@ -4,7 +4,7 @@
   "scripts": {
     "start": "./start.sh",
     "start:sudo": "npm run build && sudo PORT=443 node server/src/index.js",
-    "build": "cd client && npm run build",
+    "build": "QT_QPA_PLATFORM=offscreen npm run build --prefix client",
     "dev:server": "cd server && npm run dev",
     "dev:client": "cd client && npm run dev",
     "test:server": "cd server && npm test",

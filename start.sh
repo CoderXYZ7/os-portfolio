@@ -3,6 +3,10 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# Headless-safe Qt env (some native deps/binaries require this on servers without a display)
+export QT_QPA_PLATFORM=offscreen
+export DISPLAY="${DISPLAY:-:0}"
+
 # Build client if dist is missing or stale
 if [ ! -f "$SCRIPT_DIR/client/dist/index.html" ]; then
   echo "[portfolio] Building client..."
