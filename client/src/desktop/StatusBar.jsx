@@ -26,7 +26,13 @@ export default function StatusBar({ connected }) {
   }, []);
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 flex items-center justify-between bg-graphite/95 border-t border-dirty-white/20 px-3 py-1 text-[10px] uppercase tracking-widest z-[10000]">
+    <div
+      className="fixed bottom-0 left-0 right-0 flex items-center justify-between bg-graphite/95 border-t border-dirty-white/20 px-3 text-[10px] uppercase tracking-widest z-[10000]"
+      style={{
+        paddingTop: '4px',
+        paddingBottom: 'max(4px, env(safe-area-inset-bottom))',
+      }}
+    >
       <div className="flex items-center gap-3">
         {/* Signal indicator */}
         <div className="flex items-center gap-1.5">

@@ -34,15 +34,18 @@ function getSymbol(tags, label, isSystem) {
   return TAG_SYMBOLS[tags[0]] ?? tags[0].slice(0, 2).toUpperCase();
 }
 
-export default function DesktopIcon({ label, tags = [], onOpen, variant = 'project', staggerIndex = 0 }) {
+export default function DesktopIcon({ label, tags = [], onOpen, variant = 'project', staggerIndex = 0, isMobile = false }) {
   const isSystem = variant === 'system';
   const symbol = getSymbol(tags, label, isSystem);
 
+  // Mobile: single tap for everything. Desktop: system=click, project=dblclick (OS convention).
+  const handleClick = (isMobile || isSystem) ? onOpen : undefined;
+  const handleDblClick = (!isMobile && !isSystem) ? onOpen : undefined;
+
   return (
     <button
-      onClick={isSystem ? onOpen : undefined}
-      onDoubleClick={!isSystem ? onOpen : undefined}
-      onTouchEnd={!isSystem ? (e) => { e.preventDefault(); onOpen(); } : undefined}
+      onClick={handleClick}
+      onDoubleClick={handleDblClick}
       className={[
         'anim-fade-in-up group flex flex-col items-center gap-1.5 p-2 text-center',
         'focus:outline-none transition-colors duration-100 select-none touch-manipulation',

@@ -1,5 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { executeCommand, getCompletions } from './terminalCommands.js';
+import { useKeyboardOffset } from '../hooks/useVisualViewport.js';
+import { useIsMobile } from '../hooks/useIsMobile.js';
 
 export default function TerminalWindow({ projects, openProject }) {
   const [history, setHistory] = useState(['Type "help" to get started.']);
@@ -7,12 +9,20 @@ export default function TerminalWindow({ projects, openProject }) {
   const [pastCommands, setPastCommands] = useState([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
   const bottomRef = useRef(null);
-  // tab completion cycling state
-  const tabStateRef = useRef(null); // { matches, index, base }
+  const inputRef = useRef(null);
+  const tabStateRef = useRef(null);
+  const kbOffset = useKeyboardOffset();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [history]);
+
+  // When keyboard appears on mobile, scroll input into view
+  useEffect(() => {
+    if (!isMobile || kbOffset === 0) return;
+    inputRef.current?.scrollIntoView({ block: 'nearest' });
+  }, [kbOffset, isMobile]);
 
   function runInput() {
     tabStateRef.current = null;
@@ -28,7 +38,6 @@ export default function TerminalWindow({ projects, openProject }) {
       e.preventDefault();
       const env = { projects, openProject };
 
-      // If continuing a tab cycle, advance index
       if (tabStateRef.current && input === tabStateRef.current.current) {
         const { matches, index, base } = tabStateRef.current;
         if (matches.length === 0) return;
@@ -41,12 +50,10 @@ export default function TerminalWindow({ projects, openProject }) {
         return;
       }
 
-      // Fresh tab press
       const completions = getCompletions(input, env);
       if (completions.length === 0) return;
 
       if (completions.length === 1) {
-        // Unambiguous: complete and add trailing space for commands
         const parts = input.split(/\s+/);
         parts[parts.length - 1] = completions[0];
         const completed = parts.join(' ') + (parts.length === 1 ? ' ' : '');
@@ -55,16 +62,13 @@ export default function TerminalWindow({ projects, openProject }) {
         return;
       }
 
-      // Multiple matches: show them and start cycling
       const commonPrefix = completions.reduce((acc, s) => {
         let i = 0;
         while (i < acc.length && i < s.length && acc[i] === s[i]) i++;
         return acc.slice(0, i);
       });
       const parts = input.split(/\s+/);
-      const base = [...parts.slice(0, -1), ''].join(' ').trimStart() !== ''
-        ? parts.slice(0, -1).join(' ') + ' '
-        : '';
+      const base = parts.length > 1 ? parts.slice(0, -1).join(' ') + ' ' : '';
       const completed = base + commonPrefix;
 
       setHistory((h) => [...h, completions.join('  ')]);
@@ -73,7 +77,6 @@ export default function TerminalWindow({ projects, openProject }) {
       return;
     }
 
-    // Any non-tab key resets tab cycle
     tabStateRef.current = null;
 
     if (e.key === 'Enter') {
@@ -99,8 +102,16 @@ export default function TerminalWindow({ projects, openProject }) {
   }
 
   return (
-    <div className="font-mono text-xs h-full flex flex-col">
-      <div className="flex-1 overflow-auto whitespace-pre-wrap break-all">
+    <div
+      className="font-mono text-xs flex flex-col"
+      style={{
+        // On mobile, shrink to avoid keyboard overlap as fallback for non-dvh browsers
+        height: isMobile ? `calc(100% - ${kbOffset}px)` : '100%',
+        transition: 'height 0.15s ease',
+      }}
+    >
+      {/* History */}
+      <div className="flex-1 overflow-y-auto overflow-x-hidden whitespace-pre-wrap break-words overscroll-contain">
         {history.map((line, i) => (
           <div
             key={i}
@@ -111,17 +122,26 @@ export default function TerminalWindow({ projects, openProject }) {
         ))}
         <div ref={bottomRef} />
       </div>
-      <div className="flex items-center gap-1 border-t border-dirty-white/20 pt-1 mt-1">
+
+      {/* Input bar — sticks to bottom, always above keyboard */}
+      <div
+        ref={inputRef}
+        className="flex items-center gap-2 border-t border-dirty-white/20 pt-2 mt-1 flex-shrink-0"
+        style={{ paddingBottom: isMobile ? 'env(safe-area-inset-bottom, 4px)' : undefined }}
+      >
         <span className="text-accent-orange select-none">$</span>
         <input
-          autoFocus
+          autoFocus={!isMobile} // don't auto-open keyboard on mobile
+          ref={inputRef}
           value={input}
           onChange={(e) => { tabStateRef.current = null; setInput(e.target.value); }}
           onKeyDown={handleKeyDown}
-          className="flex-1 bg-transparent outline-none text-dirty-white caret-accent-orange"
+          className="flex-1 bg-transparent outline-none text-dirty-white caret-accent-orange min-w-0"
+          style={{ fontSize: '16px' }} // prevents iOS auto-zoom on focus
           spellCheck={false}
           autoCapitalize="none"
           autoCorrect="off"
+          enterKeyHint="send"
         />
       </div>
     </div>

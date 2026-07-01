@@ -3,7 +3,7 @@ title: lightWiki
 tags: [PHP, Wiki, AI, SQLite, NASA, RAG, Markdown]
 techStack: [PHP, SQLite, JavaScript, CSS, embedding vectors]
 featured: true
-liveUrl: http://bsl.mywire.org
+liveUrl: http://bsl.mywire.org:8080/
 ---
 
 Wiki leggera costruita in PHP + SQLite, con supporto Markdown esteso, diagrammi Mermaid e integrazione AI per ricerca semantica.

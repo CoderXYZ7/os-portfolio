@@ -1,27 +1,38 @@
 import { Rnd } from 'react-rnd';
 import { useWindowManager } from './WindowManagerContext.jsx';
+import { useKeyboardOffset } from '../hooks/useVisualViewport.js';
 
 function MobileWindow({ id, title, children }) {
   const { closeWindow, minimizeWindow } = useWindowManager();
+  const kbOffset = useKeyboardOffset();
 
   return (
     <div
       className="mobile-window-enter fixed inset-0 bg-graphite flex flex-col border-2 border-accent-orange"
-      style={{ zIndex: 9500 }}
+      style={{
+        zIndex: 9500,
+        // dvh shrinks with keyboard on modern browsers; kbOffset is the fallback
+        height: `calc(100dvh - ${kbOffset}px)`,
+        // safe area for notched phones
+        paddingBottom: `env(safe-area-inset-bottom, 0px)`,
+      }}
     >
-      {/* Title bar */}
-      <div className="flex items-center justify-between bg-accent-orange text-graphite px-3 py-2 uppercase tracking-wide text-xs font-bold flex-shrink-0">
+      {/* White accent stripe */}
+      <div className="h-px bg-white/30 flex-shrink-0" />
+
+      {/* Title bar — tall enough for comfortable tapping */}
+      <div className="flex items-center justify-between bg-accent-orange text-graphite px-3 py-3 uppercase tracking-wide text-xs font-bold flex-shrink-0">
         <span className="truncate">{title}</span>
-        <div className="flex gap-1">
+        <div className="flex gap-2">
           <button
-            className="px-2 py-0.5 border border-graphite text-graphite"
+            className="min-w-[44px] min-h-[44px] flex items-center justify-center border border-graphite active:bg-graphite/30 touch-manipulation"
             onClick={() => minimizeWindow(id)}
             aria-label="minimize"
           >
             _
           </button>
           <button
-            className="px-2 py-0.5 border border-graphite bg-accent-red text-dirty-white"
+            className="min-w-[44px] min-h-[44px] flex items-center justify-center border border-graphite bg-accent-red text-dirty-white active:bg-red-800 touch-manipulation"
             onClick={() => closeWindow(id)}
             aria-label="close"
           >
@@ -30,8 +41,8 @@ function MobileWindow({ id, title, children }) {
         </div>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 overflow-auto p-4 text-sm">
+      {/* Scrollable content */}
+      <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 text-sm overscroll-contain">
         {children}
       </div>
     </div>
@@ -53,10 +64,8 @@ function DesktopWindow({ id, title, zIndex, children }) {
       className="border-2 border-accent-orange bg-graphite shadow-[8px_8px_0_rgba(0,0,0,0.7)]"
     >
       <div className="window-enter flex flex-col h-full">
-        {/* White accent stripe */}
         <div className="h-px bg-white/30 flex-shrink-0" />
 
-        {/* Title bar */}
         <div
           className="flex items-center justify-between bg-accent-orange text-graphite px-2 py-1 cursor-move uppercase tracking-wide text-xs font-bold flex-shrink-0"
           onMouseDown={() => focusWindow(id)}
@@ -83,7 +92,6 @@ function DesktopWindow({ id, title, zIndex, children }) {
           </div>
         </div>
 
-        {/* Content */}
         <div
           className="p-3 overflow-auto flex-1 text-sm"
           onMouseDown={() => focusWindow(id)}

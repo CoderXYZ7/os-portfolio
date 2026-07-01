@@ -81,6 +81,7 @@ export default function Desktop() {
                   variant="project"
                   onOpen={() => openProject(p.slug, p.title)}
                   staggerIndex={i}
+                  isMobile={isMobile}
                 />
               ))}
             </div>
@@ -105,6 +106,7 @@ export default function Desktop() {
                   variant="project"
                   onOpen={() => openProject(p.slug, p.title)}
                   staggerIndex={i}
+                  isMobile={isMobile}
                 />
               ))}
             </div>
@@ -119,6 +121,7 @@ export default function Desktop() {
                 label={s.label}
                 variant="system"
                 onOpen={s.onOpen}
+                isMobile={isMobile}
                 staggerIndex={projects.length + i}
               />
             ))}
