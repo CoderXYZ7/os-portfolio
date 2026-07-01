@@ -1,6 +1,8 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@theme {
+:root {
   --color-graphite: #2a2d2f;
   --color-dirty-white: #e4e1d8;
   --color-accent-orange: #ff6a00;
@@ -8,10 +10,6 @@
   --color-accent-amber: #d9a441;
   --color-accent-red: #c4453a;
   --font-family-mono: "JetBrains Mono", "IBM Plex Mono", monospace;
-  --font-family-display: "Big Shoulders", sans-serif;
-}
-
-:root {
   color-scheme: dark;
 }
 
