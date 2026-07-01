@@ -10,21 +10,14 @@ export DISPLAY="${DISPLAY:-:0}"
 # Ensure local node_modules/.bin takes priority over system binaries (e.g. system 'vite' Qt app)
 export PATH="$SCRIPT_DIR/client/node_modules/.bin:$SCRIPT_DIR/server/node_modules/.bin:$PATH"
 
-# Install dependencies if missing
-if [ ! -d "$SCRIPT_DIR/client/node_modules" ]; then
-  echo "[portfolio] Installing client dependencies..."
-  (cd "$SCRIPT_DIR/client" && npm install)
-fi
-if [ ! -d "$SCRIPT_DIR/server/node_modules" ]; then
-  echo "[portfolio] Installing server dependencies..."
-  (cd "$SCRIPT_DIR/server" && npm install)
-fi
+# Install / sync dependencies
+echo "[portfolio] Syncing dependencies..."
+(cd "$SCRIPT_DIR/client" && npm install --prefer-offline 2>&1 | grep -v "^npm warn\|^added\|^up to date\|^changed" || true)
+(cd "$SCRIPT_DIR/server" && npm install --prefer-offline 2>&1 | grep -v "^npm warn\|^added\|^up to date\|^changed" || true)
 
-# Build client if dist is missing
-if [ ! -f "$SCRIPT_DIR/client/dist/index.html" ]; then
-  echo "[portfolio] Building client..."
-  (cd "$SCRIPT_DIR/client" && npm run build)
-fi
+# Build client (always rebuild to pick up any source changes)
+echo "[portfolio] Building client..."
+(cd "$SCRIPT_DIR/client" && npm run build)
 
 # Try port 443 first; if EACCES fall back with instructions
 if node -e "require('net').createServer().listen(443, () => process.exit(0))" 2>/dev/null; then
