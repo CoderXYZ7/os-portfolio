@@ -4,10 +4,11 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  base: '/portfolio',
   server: {
     proxy: {
-      '/api': 'http://localhost:4000',
-      '/ws': { target: 'ws://localhost:4000', ws: true },
+      '/portfolio/api': 'http://localhost:4000',
+      '/portfolio/ws': { target: 'ws://localhost:4000', ws: true },
     },
   },
   test: { environment: 'jsdom' },

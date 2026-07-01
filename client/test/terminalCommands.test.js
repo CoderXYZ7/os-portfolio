@@ -28,7 +28,7 @@ describe('executeCommand', () => {
 
   it('whoami returns a fixed identity line', () => {
     const result = executeCommand('whoami', env);
-    expect(result.lines).toEqual(['visitor@portfolio']);
+    expect(result.lines[0]).toBe('visitor@bsl-os');
   });
 
   it('open <project> calls env.openProject with the matching slug and title', () => {

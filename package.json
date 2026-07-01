@@ -2,11 +2,13 @@
   "name": "portfolio",
   "private": true,
   "scripts": {
+    "start": "./start.sh",
+    "start:sudo": "npm run build && sudo PORT=443 node server/src/index.js",
+    "build": "cd client && npm run build",
     "dev:server": "cd server && npm run dev",
     "dev:client": "cd client && npm run dev",
     "test:server": "cd server && npm test",
     "test:client": "cd client && npm test",
-    "test": "npm run test:server && npm run test:client",
-    "build": "cd client && npm run build"
+    "test": "npm run test:server && npm run test:client"
   }
 }

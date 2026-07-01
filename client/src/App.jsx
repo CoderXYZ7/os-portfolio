@@ -1,18 +1,19 @@
 import { useState } from 'react';
 import BootSequence from './boot/BootSequence.jsx';
+import StartupScreen from './boot/StartupScreen.jsx';
 import Desktop from './desktop/Desktop.jsx';
 import { WindowManagerProvider } from './windows/WindowManagerContext.jsx';
 
 function App() {
-  const [booted, setBooted] = useState(() => sessionStorage.getItem('booted') === 'true');
+  // Always boot from scratch on every page load
+  const [phase, setPhase] = useState('boot');
 
-  function handleBootComplete() {
-    sessionStorage.setItem('booted', 'true');
-    setBooted(true);
+  if (phase === 'boot') {
+    return <BootSequence onComplete={() => setPhase('startup')} />;
   }
 
-  if (!booted) {
-    return <BootSequence onComplete={handleBootComplete} />;
+  if (phase === 'startup') {
+    return <StartupScreen onComplete={() => setPhase('desktop')} />;
   }
 
   return (

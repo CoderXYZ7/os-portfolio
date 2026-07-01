@@ -1,3 +1,5 @@
+const BASE = '/portfolio/api';
+
 async function getJson(url) {
   const res = await fetch(url);
   if (!res.ok) {
@@ -7,17 +9,17 @@ async function getJson(url) {
 }
 
 export function fetchProjects() {
-  return getJson('/api/projects');
+  return getJson(`${BASE}/projects`);
 }
 
 export function fetchProject(slug) {
-  return getJson(`/api/projects/${slug}`);
+  return getJson(`${BASE}/projects/${slug}`);
 }
 
 export function fetchAbout() {
-  return getJson('/api/content/about');
+  return getJson(`${BASE}/content/about`);
 }
 
 export function fetchContact() {
-  return getJson('/api/content/contact');
+  return getJson(`${BASE}/content/contact`);
 }

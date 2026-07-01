@@ -9,7 +9,7 @@ export default function ImageCarousel({ slug, images }) {
     <div className="mt-3">
       <div className="relative border-2 border-dirty-white">
         <img
-          src={`/api/projects/${slug}/images/${images[index]}`}
+          src={`/portfolio/api/projects/${slug}/images/${images[index]}`}
           alt={`${slug} screenshot ${index + 1}`}
           className="w-full h-48 object-cover"
         />

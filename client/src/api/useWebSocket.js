@@ -13,7 +13,7 @@ export function useWebSocket(onMessage) {
 
     function connect() {
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-      socket = new WebSocket(`${protocol}//${window.location.host}/ws`);
+      socket = new WebSocket(`${protocol}//${window.location.host}/portfolio/ws`);
 
       socket.addEventListener('open', () => {
         retryDelay = 1000;

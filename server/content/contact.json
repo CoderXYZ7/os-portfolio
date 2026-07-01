@@ -1,1 +1,5 @@
-[{ "label": "Email", "value": "you@example.com", "href": "mailto:you@example.com" }]
+[
+  { "label": "Email", "value": "badsiliconlabs@gmail.com", "href": "mailto:badsiliconlabs@gmail.com" },
+  { "label": "GitHub", "value": "CoderXYZ7", "href": "https://github.com/CoderXYZ7" },
+  { "label": "NASA Space Apps", "value": "bsl.mywire.org", "href": "http://bsl.mywire.org" }
+]

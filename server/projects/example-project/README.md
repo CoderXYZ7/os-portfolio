@@ -1,13 +1,13 @@
 ---
 title: OS Portfolio
-tags: [React, Node.js, WebSocket]
-techStack: [React, Vite, Express, chokidar]
+tags: [React, Node.js, WebSocket, Vite, Tailwind]
+techStack: [React, Vite, Express, chokidar, react-rnd]
 featured: true
 repoUrl: https://github.com/CoderXYZ7/portfolio
 ---
 
-This portfolio itself — a simulated OS desktop built with React and an Express backend.
+Questo portfolio - un desktop OS simulato costruito con React e un backend Express.
 
-Projects are folders on disk: drop a `README.md` into `server/projects/` and it appears on the desktop in real time via WebSocket push, no reload required.
+I progetti sono cartelle su disco: aggiungi un `README.md` in `server/projects/` e appare sul desktop in tempo reale via WebSocket push, senza ricaricare la pagina.
 
-Features: draggable/resizable windows, boot sequence, live file watcher, terminal emulator, image carousel.
+**Funzionalità:** finestre trascinabili e ridimensionabili, sequenza di boot, file watcher live, emulatore terminale, carosello immagini, status bar con metriche di sistema simulate.
